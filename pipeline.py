@@ -222,6 +222,20 @@ def run_pipeline(claim: str, config: PipelineConfig | None = None) -> dict[str, 
     LOGGER.info("Pipeline started.")
 
     articles = retrieve_articles(claim, active_config)
+    if not articles:
+        LOGGER.info("No articles retrieved. Returning early with UNVERIFIED verdict.")
+        return {
+            "claim": claim,
+            "articles_retrieved": 0,
+            "articles_used": 0,
+            "evidences": [],
+            "verdict": {
+                "verdict": "UNVERIFIED",
+                "confidence": 0.0,
+                "reason": "No results found for the provided claim.",
+            },
+        }
+
     annotated_articles = annotate_sources(claim, articles, active_config)
     extracted_evidences = extract_and_detect_stance(claim, annotated_articles, active_config)
     filtered_evidences = filter_evidences(extracted_evidences, active_config)

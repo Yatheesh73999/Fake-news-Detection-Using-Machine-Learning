@@ -34,7 +34,7 @@ def fetch_news_articles(claim: str) -> list[dict[str, Any]]:
 
     articles = payload.get("articles", [])
     if not articles:
-        raise ValueError("No news articles found for the provided claim.")
+        return []
 
     formatted_articles: list[dict[str, Any]] = []
     for article in articles:
